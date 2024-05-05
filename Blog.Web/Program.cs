@@ -1,3 +1,6 @@
+using Blog.Data.Context;
+using Microsoft.EntityFrameworkCore;
+
 namespace Blog.Web
 {
     public class Program
@@ -8,7 +11,7 @@ namespace Blog.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
