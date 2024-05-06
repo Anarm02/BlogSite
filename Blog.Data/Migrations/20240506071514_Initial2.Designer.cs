@@ -4,6 +4,7 @@ using Blog.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240506071514_Initial2")]
+    partial class Initial2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,32 +77,6 @@ namespace Blog.Data.Migrations
                     b.HasIndex("ImageId");
 
                     b.ToTable("Articles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("5163ca57-7011-4e76-8ebb-8205f3cddd1a"),
-                            CategoryId = new Guid("f77fc9bc-b838-4745-93bf-17564a78dfc9"),
-                            Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a interdum sapien. Fusce eget lectus sit amet dui convallis feugiat nec et quam. Integer massa purus, dictum et vestibulum eget, ullamcorper ac diam. Cras varius sed eros in iaculis. Cras posuere dignissim purus nec porta. Phasellus vehicula at justo eu finibus. Mauris eget tempus nulla, vitae porta neque. Praesent in ornare magna. Phasellus diam dolor, consectetur ut eros id, feugiat aliquam turpis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut tortor sit amet orci auctor pellentesque eget tristique augue. Aliquam et viverra tellus, ac hendrerit massa. Pellentesque rhoncus nisl non dolor tempor, malesuada convallis enim cursus. Aenean consequat ex dui, sed bibendum orci semper et.",
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9070),
-                            ImageId = new Guid("7de25a1b-6c11-4aa3-9974-172c52571b2e"),
-                            IsDeleted = false,
-                            Title = "Asp.net Core Article 1",
-                            ViewCount = 15
-                        },
-                        new
-                        {
-                            Id = new Guid("429c3518-7d8d-43b5-b4ad-a81c34dee247"),
-                            CategoryId = new Guid("e35e8b13-c92f-4720-bb44-bd0536925b08"),
-                            Content = " VSLorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a interdum sapien. Fusce eget lectus sit amet dui convallis feugiat nec et quam. Integer massa purus, dictum et vestibulum eget, ullamcorper ac diam. Cras varius sed eros in iaculis. Cras posuere dignissim purus nec porta. Phasellus vehicula at justo eu finibus. Mauris eget tempus nulla, vitae porta neque. Praesent in ornare magna. Phasellus diam dolor, consectetur ut eros id, feugiat aliquam turpis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut tortor sit amet orci auctor pellentesque eget tristique augue. Aliquam et viverra tellus, ac hendrerit massa. Pellentesque rhoncus nisl non dolor tempor, malesuada convallis enim cursus. Aenean consequat ex dui, sed bibendum orci semper et.",
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9079),
-                            ImageId = new Guid("3a94e829-4a63-4598-8bd7-80aeda1eef6a"),
-                            IsDeleted = false,
-                            Title = "Visual Studio Article 1",
-                            ViewCount = 14
-                        });
                 });
 
             modelBuilder.Entity("Blog.Entity.Entities.Category", b =>
@@ -138,24 +114,6 @@ namespace Blog.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f77fc9bc-b838-4745-93bf-17564a78dfc9"),
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9458),
-                            IsDeleted = false,
-                            Name = "Asp.net Core"
-                        },
-                        new
-                        {
-                            Id = new Guid("e35e8b13-c92f-4720-bb44-bd0536925b08"),
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9462),
-                            IsDeleted = false,
-                            Name = "Visual Studio 2022"
-                        });
                 });
 
             modelBuilder.Entity("Blog.Entity.Entities.Image", b =>
@@ -197,26 +155,6 @@ namespace Blog.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Images");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("7de25a1b-6c11-4aa3-9974-172c52571b2e"),
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9639),
-                            FileName = "images/testImage",
-                            FileType = "jpg",
-                            IsDeleted = false
-                        },
-                        new
-                        {
-                            Id = new Guid("3a94e829-4a63-4598-8bd7-80aeda1eef6a"),
-                            CreatedBy = "Admin Test",
-                            CreatedDate = new DateTime(2024, 5, 6, 11, 38, 32, 994, DateTimeKind.Local).AddTicks(9644),
-                            FileName = "images/VsImage",
-                            FileType = "png",
-                            IsDeleted = false
-                        });
                 });
 
             modelBuilder.Entity("Blog.Entity.Entities.Article", b =>

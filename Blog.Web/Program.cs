@@ -1,5 +1,6 @@
 using Blog.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Blog.Web
 {
@@ -13,7 +14,7 @@ namespace Blog.Web
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
-
+           
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
