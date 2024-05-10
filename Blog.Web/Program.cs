@@ -1,5 +1,6 @@
 using Blog.Data.Context;
 using Blog.Data.Extensions;
+using Blog.Service.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -13,6 +14,7 @@ namespace Blog.Web
 
             // Add services to the container.
             builder.Services.Load(builder.Configuration);
+            builder.Services.LoadService();
             builder.Services.AddControllersWithViews();
             var app = builder.Build();
            
