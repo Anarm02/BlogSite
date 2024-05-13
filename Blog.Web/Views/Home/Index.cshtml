@@ -1,5 +1,6 @@
-﻿
-@model List<Article>
+﻿@using Blog.Entity.DTOs.Articles
+
+@model List<ArticleDto>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -12,5 +13,9 @@
 @foreach(var article in Model)
 {
     <h1>@article.Title</h1> <br />
-    <h3>@article.Content</h3> <br /><br />
+    <h3>@article.Content</h3> <br />
+    <h3>@article.CreatedBy</h3>
+    <br />
+    <br />
+    <br />
 }
