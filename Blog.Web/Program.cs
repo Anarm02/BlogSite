@@ -15,7 +15,8 @@ namespace Blog.Web
             // Add services to the container.
             builder.Services.Load(builder.Configuration);
             builder.Services.LoadService();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             var app = builder.Build();
            
             // Configure the HTTP request pipeline.
@@ -33,9 +34,15 @@ namespace Blog.Web
 
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapAreaControllerRoute(
+                    name:"Admin",
+                    areaName:"Admin",
+                    pattern:"Admin/{controller=Home}/{action=index}/{id?}"
+                    );
+                endpoints.MapDefaultControllerRoute();
+            });
 
             app.Run();
         }
