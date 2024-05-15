@@ -29,7 +29,9 @@ namespace Blog.Data.Mappings
                 FileType = "png",
                 CreatedBy = "Admin Test",
                 IsDeleted = false,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+               
+                
             }
             );
         }
