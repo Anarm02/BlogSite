@@ -15,9 +15,9 @@ namespace Blog.Data.Extensions
 {
     public static class DataLayerExtension
     {
-        public static IServiceCollection Load(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection Load(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
