@@ -25,7 +25,7 @@ namespace Blog.Service.Services.Concrete
         public async Task<List<ArticleDto>> GetAllArticleAsync()
         {
             
-            return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync());
+            return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted,a=>a.Category));
         }
     }
 }

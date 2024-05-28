@@ -1,0 +1,54 @@
+﻿@model List<ArticleDto>
+<div class="container-xxl flex-grow-1 container-p-y">
+
+
+    <h4 class="py-3 mb-4">
+        <span class="text-muted fw-light">Article Management /</span> Articles
+    </h4>
+
+    <!-- Basic Bootstrap Table -->
+    <div class="card">
+        <h5 class="card-header">Table Basic</h5>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-bordered" id="articlesTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created Date</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @foreach(var article in Model)
+                    {
+                        <tr name="@article.Id">
+                            <th>@article.Title</th>
+                            <th>@article.Category.Name</th>
+                            <th>@article.CreatedDate.ToShortDateString()</th>
+                            <th>@article.CreatedBy</th>
+                            <th>@(article.IsDeleted ? "Is not active" : "Is Active")</th>
+                            <th></th>
+
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created Date</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Operations</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/articleIndex.js" type="application/ecmascript"></script>
+}
