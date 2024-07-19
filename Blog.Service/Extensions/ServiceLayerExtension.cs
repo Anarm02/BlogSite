@@ -17,6 +17,7 @@ namespace Blog.Service.Extensions
         {
             var assembly=Assembly.GetExecutingAssembly();
             services.AddScoped<IArticleService,ArticleService>().Reverse();
+            services.AddScoped<ICategoryService,CategoryService>().Reverse();
 
             services.AddAutoMapper(assembly);
             return services;

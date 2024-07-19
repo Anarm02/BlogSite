@@ -1,4 +1,5 @@
-﻿using Blog.Service.Services.Abstract;
+﻿using Blog.Entity.DTOs.Articles;
+using Blog.Service.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Areas.Admin.Controllers
@@ -7,16 +8,32 @@ namespace Blog.Web.Areas.Admin.Controllers
 	public class ArticleController : Controller
 	{
 		private readonly IArticleService articleService;
+		private readonly ICategoryService categoryService;
 
-        public ArticleController(IArticleService articleService)
+		public ArticleController(IArticleService articleService,ICategoryService categoryService)
         {
             this.articleService = articleService;
-        }
+			this.categoryService = categoryService;
+		}
 
         public async Task<IActionResult> Index()
 		{
 			var articles =await articleService.GetAllArticleAsync();
 			return View(articles);
+		}
+		[HttpGet]
+		public async Task<IActionResult> Add()
+		{
+			var categories = await categoryService.GetAllCategoriesAsync();
+			return View(new ArticleAddDto { Categories=categories});
+		}
+		[HttpPost]
+		public async Task<IActionResult> Add(ArticleAddDto articleAddDto)
+		{
+			await articleService.CreateArticleAsync(articleAddDto);
+			RedirectToAction("Index", "Article", new {Area="Admin"});
+			var categories = await categoryService.GetAllCategoriesAsync();
+			return View(new ArticleAddDto { Categories = categories });
 		}
 	}
 }
