@@ -11,6 +11,8 @@ namespace Blog.Service.Services.Abstract
     public interface IArticleService
     {
         Task<List<ArticleDto>> GetAllArticleAsync();
-        Task CreateArticleAsync(ArticleAddDto articleAddDto);
+        Task<ArticleDto> GetArticleAsync(Guid articleId);
+		Task CreateArticleAsync(ArticleAddDto articleAddDto);
+        Task UpdateArticleAsync(ArticleUpdateDto articleUpdateDto);
     }
 }

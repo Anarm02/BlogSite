@@ -31,7 +31,14 @@
                             <th>@article.CreatedDate.ToShortDateString()</th>
                             <th>@article.CreatedBy</th>
                             <th>@(article.IsDeleted ? "Is not active" : "Is Active")</th>
-                            <th></th>
+                            <th>
+                                <a  class="btn btn-primary btn-sm" 
+                                   data-id="@article.Id"
+                                   asp-area="Admin" 
+                                   asp-controller="Article" 
+                                   asp-action="Update" 
+                                   asp-route-articleId="@article.Id"><i class="bx bxs-edit"></i></a>
+                            </th>
 
                         </tr>
                     }
