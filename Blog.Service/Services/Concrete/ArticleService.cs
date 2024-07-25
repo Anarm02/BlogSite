@@ -50,6 +50,15 @@ namespace Blog.Service.Services.Concrete
             return map;
 		}
 
+		public async Task SafeDeleteArticleAsync(Guid articleId)
+		{
+			var article=await _unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
+            article.IsDeleted = true;
+            article.DeletedDate = DateTime.Now; 
+            await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
+            await _unitOfWork.SaveAsynsc();
+		}
+
 		public async Task UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)
 		{
             var article = await _unitOfWork.GetRepository<Article>().GetAsync(a => a.Id==articleUpdateDto.Id && a.IsDeleted == false, a => a.Category);
