@@ -1,5 +1,7 @@
 ﻿using Blog.Service.Services.Abstract;
 using Blog.Service.Services.Concrete;
+using Blog.Service.Validations;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,6 +21,7 @@ namespace Blog.Service.Extensions
             services.AddScoped<IArticleService,ArticleService>().Reverse();
             services.AddScoped<ICategoryService,CategoryService>().Reverse();
 
+            services.AddValidatorsFromAssemblyContaining<ArticleValidator>();
             services.AddAutoMapper(assembly);
             return services;
         }

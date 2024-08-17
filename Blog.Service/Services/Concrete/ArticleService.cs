@@ -25,15 +25,9 @@ namespace Blog.Service.Services.Concrete
 		public async Task CreateArticleAsync(ArticleAddDto articleAddDto)
 		{
             var userId = Guid.Parse("60F812E7-9374-4623-873B-C28D9F6437E4");
-
-		   await _unitOfWork.GetRepository<Article>().AddAsync(new()
-            {
-                CategoryId = articleAddDto.CategoryId,
-                Title = articleAddDto.Title,
-                Content = articleAddDto.Content,
-                UserId= userId, 
-
-            });
+            var imageId = Guid.Parse("{7DE25A1B-6C11-4AA3-9974-172C52571B2E}");
+			var article = new Article(articleAddDto.Title, articleAddDto.Content, userId, articleAddDto.CategoryId, imageId);
+            await _unitOfWork.GetRepository<Article>().AddAsync(article);
             await _unitOfWork.SaveAsynsc();
 		}
 
@@ -50,22 +44,24 @@ namespace Blog.Service.Services.Concrete
             return map;
 		}
 
-		public async Task SafeDeleteArticleAsync(Guid articleId)
+		public async Task<string> SafeDeleteArticleAsync(Guid articleId)
 		{
 			var article=await _unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
             article.IsDeleted = true;
             article.DeletedDate = DateTime.Now; 
             await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWork.SaveAsynsc();
+            return article.Title;
 		}
 
-		public async Task UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)
+		public async Task<string> UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)
 		{
             var article = await _unitOfWork.GetRepository<Article>().GetAsync(a => a.Id==articleUpdateDto.Id && a.IsDeleted == false, a => a.Category);
+            string articletitlebefore = article.Title;
 			_mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, article); 
             await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWork.SaveAsynsc();
-
+            return articletitlebefore;
 		}
 	}
 }
