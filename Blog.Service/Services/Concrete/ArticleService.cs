@@ -2,10 +2,15 @@
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.Articles;
 using Blog.Entity.Entities;
+using Blog.Entity.Enums;
+using Blog.Service.Extensions;
+using Blog.Service.Helpers;
 using Blog.Service.Services.Abstract;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,18 +20,27 @@ namespace Blog.Service.Services.Concrete
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+		private readonly IHttpContextAccessor httpContextAccessor;
+		private readonly IImageHelper imageHelper;
+		ClaimsPrincipal _user;
 
-        public ArticleService(IUnitOfWork unitOfWork,IMapper mapper)
+		public ArticleService(IUnitOfWork unitOfWork,IMapper mapper,IHttpContextAccessor httpContextAccessor,IImageHelper imageHelper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-        }
+			this.httpContextAccessor = httpContextAccessor;
+			this.imageHelper = imageHelper;
+			_user = httpContextAccessor.HttpContext.User;
+		}
 
 		public async Task CreateArticleAsync(ArticleAddDto articleAddDto)
 		{
-            var userId = Guid.Parse("60F812E7-9374-4623-873B-C28D9F6437E4");
-            var imageId = Guid.Parse("{7DE25A1B-6C11-4AA3-9974-172C52571B2E}");
-			var article = new Article(articleAddDto.Title, articleAddDto.Content, userId, articleAddDto.CategoryId, imageId);
+            var userId = _user.GetLoggedInUserId();
+            var email=_user.GetLoggedInMail();
+            var image=await imageHelper.Upload(articleAddDto.Title,articleAddDto.Photo,ImageType.Post);
+            Image image1 = new(image.FullName,articleAddDto.Photo.ContentType,email);
+            await _unitOfWork.GetRepository<Image>().AddAsync(image1);
+			var article = new Article(articleAddDto.Title, articleAddDto.Content, userId, articleAddDto.CategoryId, image1.Id,email);
             await _unitOfWork.GetRepository<Article>().AddAsync(article);
             await _unitOfWork.SaveAsynsc();
 		}
@@ -34,21 +48,23 @@ namespace Blog.Service.Services.Concrete
 		public async Task<List<ArticleDto>> GetAllArticleAsync()
         {
             
-            return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted,a=>a.Category));
+            return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted,a=>a.Category,a=>a.Image));
         }
 
 		public async Task<ArticleDto> GetArticleAsync(Guid articleId)
 		{
-			var article=await _unitOfWork.GetRepository<Article>().GetAsync(a=>a.Id==articleId && a.IsDeleted==false,a=>a.Category);
+			var article=await _unitOfWork.GetRepository<Article>().GetAsync(a=>a.Id==articleId && a.IsDeleted==false,a=>a.Category,a=>a.Image);
             var map=_mapper.Map<ArticleDto>(article);
             return map;
 		}
 
 		public async Task<string> SafeDeleteArticleAsync(Guid articleId)
 		{
-			var article=await _unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
+			var email = _user.GetLoggedInMail();
+			var article =await _unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
             article.IsDeleted = true;
             article.DeletedDate = DateTime.Now; 
+            article.DeletedBy=email;
             await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWork.SaveAsynsc();
             return article.Title;
@@ -56,9 +72,30 @@ namespace Blog.Service.Services.Concrete
 
 		public async Task<string> UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)
 		{
-            var article = await _unitOfWork.GetRepository<Article>().GetAsync(a => a.Id==articleUpdateDto.Id && a.IsDeleted == false, a => a.Category);
+			var email = _user.GetLoggedInMail();
+			var article = await _unitOfWork.GetRepository<Article>().GetAsync(a => a.Id==articleUpdateDto.Id && a.IsDeleted == false, a => a.Category,a=>a.Image);
+            if(articleUpdateDto.Photo != null)
+            {
+                if (article.Image != null) {
+					imageHelper.Delete(article.Image.FileName);
+				}
+                else
+                {
+                    throw new Exception("Article image is null");
+                }
+                
+                var imageUpload = await imageHelper.Upload(articleUpdateDto.Title, articleUpdateDto.Photo, ImageType.Post);
+                Image image = new(imageUpload.FullName, articleUpdateDto.Photo.ContentType, email);
+                await _unitOfWork.GetRepository<Image>().AddAsync(image);
+                article.ImageId= image.Id;
+            }
             string articletitlebefore = article.Title;
-			_mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, article); 
+			
+           article.ModifiedDate = DateTime.Now;
+            article.Title = articleUpdateDto.Title;
+            article.Content= articleUpdateDto.Content;
+            article.CategoryId=articleUpdateDto.CategoryId;
+            article.ModifiedBy = email;
             await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWork.SaveAsynsc();
             return articletitlebefore;

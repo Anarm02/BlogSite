@@ -19,7 +19,12 @@ namespace Blog.Web.Areas.Admin.Controllers
 		private readonly IValidator<Article> validator;
 		private readonly IToastNotification toast;
 
-		public ArticleController(IArticleService articleService, ICategoryService categoryService, IMapper mapper,IValidator<Article> validator,IToastNotification toast)
+		public ArticleController(IArticleService articleService, 
+			ICategoryService categoryService, 
+			IMapper mapper,
+			IValidator<Article> validator,
+			IToastNotification toast
+			)
 		{
 			this.articleService = articleService;
 			this.categoryService = categoryService;
