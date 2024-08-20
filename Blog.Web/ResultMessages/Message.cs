@@ -16,6 +16,21 @@
 				return $"The article named {title} has been deleted successfully";
 			}
 		}
+		public static class Category
+		{
+			public static string Add(string categoryname)
+			{
+				return $"The category named {categoryname} has been added successfully";
+			}
+			public static string Update(string categoryname)
+			{
+				return $"The category named {categoryname} has been updated successfully";
+			}
+			public static string Delete(string categoryname)
+			{
+				return $"The category named {categoryname} has been deleted successfully";
+			}
+		}
 
 	}
 }
