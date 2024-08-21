@@ -11,8 +11,9 @@ namespace Blog.Entity.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Guid ImageId { get; set; }
-        public Image Image { get; set; }
+        public Guid ImageId { get; set; } = Guid.Parse("{7DE25A1B-6C11-4AA3-9974-172C52571B2E}");
+
+		public Image Image { get; set; }
         public ICollection<Article> Articles { get; set; }
     }
 }

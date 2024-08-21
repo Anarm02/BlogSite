@@ -31,6 +31,21 @@
 				return $"The category named {categoryname} has been deleted successfully";
 			}
 		}
+		public static class User
+		{
+			public static string Add(string username)
+			{
+				return $"The user named {username} has been added successfully";
+			}
+			public static string Update(string username)
+			{
+				return $"The user named {username} has been updated successfully";
+			}
+			public static string Delete(string username)
+			{
+				return $"The user named {username} has been deleted successfully";
+			}
+		}
 
 	}
 }

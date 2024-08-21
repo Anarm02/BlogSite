@@ -53,6 +53,23 @@ namespace Blog.Web.Areas.Admin.Controllers
 			return View();
 			}
 		}
+		[HttpPost]
+		public async Task<IActionResult> AddWithAjax([FromBody] CategoryAddDto categoryAddDto)
+		{
+			var map = mapper.Map<Category>(categoryAddDto);
+			var result = await validator.ValidateAsync(map);
+			if (result.IsValid)
+			{
+				await _categoryService.CreateCategory(categoryAddDto);
+				toast.AddSuccessToastMessage(Message.Category.Add(categoryAddDto.Name));
+				return Json(Message.Category.Add(categoryAddDto.Name));
+			}
+			else
+			{
+				toast.AddErrorToastMessage(result.Errors.FirstOrDefault().ErrorMessage);
+				return Json(result.Errors.FirstOrDefault().ErrorMessage);
+			}
+		}
 		[HttpGet]
 		public async Task<IActionResult> Update(Guid categoryId)
 		{
