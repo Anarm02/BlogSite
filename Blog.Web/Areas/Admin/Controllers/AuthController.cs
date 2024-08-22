@@ -61,5 +61,9 @@ namespace Blog.Web.Areas.Admin.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home",new {Area=""});
         }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

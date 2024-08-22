@@ -51,6 +51,12 @@ namespace Blog.Service.Services.Concrete
             return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted,a=>a.Category,a=>a.Image));
         }
 
+		public async Task<List<ArticleDto>> GetAllDeletedArticleAsync()
+		{
+			return _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a => a.IsDeleted, a => a.Category, a => a.Image));
+
+		}
+
 		public async Task<ArticleDto> GetArticleAsync(Guid articleId)
 		{
 			var article=await _unitOfWork.GetRepository<Article>().GetAsync(a=>a.Id==articleId && a.IsDeleted==false,a=>a.Category,a=>a.Image);
@@ -68,6 +74,17 @@ namespace Blog.Service.Services.Concrete
             await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWork.SaveAsynsc();
             return article.Title;
+		}
+
+		public async Task<string> UndoDeleteArticleAsync(Guid articleId)
+		{
+			var article = await _unitOfWork.GetRepository<Article>().GetByGuidAsync(articleId);
+			article.IsDeleted = false;
+			article.DeletedDate = null;
+			article.DeletedBy = null;
+			await _unitOfWork.GetRepository<Article>().UpdateAsync(article);
+			await _unitOfWork.SaveAsynsc();
+			return article.Title;
 		}
 
 		public async Task<string> UpdateArticleAsync(ArticleUpdateDto articleUpdateDto)

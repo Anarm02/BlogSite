@@ -15,6 +15,10 @@
 			{
 				return $"The article named {title} has been deleted successfully";
 			}
+			public static string UndoDelete(string title)
+			{
+				return $"The article named {title} has been revoked successfully";
+			}
 		}
 		public static class Category
 		{
@@ -29,6 +33,10 @@
 			public static string Delete(string categoryname)
 			{
 				return $"The category named {categoryname} has been deleted successfully";
+			}
+			public static string UndoDelete(string categoryname)
+			{
+				return $"The category named {categoryname} has been revoked successfully";
 			}
 		}
 		public static class User

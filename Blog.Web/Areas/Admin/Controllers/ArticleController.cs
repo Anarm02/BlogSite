@@ -5,6 +5,7 @@ using Blog.Service.Extensions;
 using Blog.Service.Services.Abstract;
 using Blog.Web.ResultMessages;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 
@@ -32,18 +33,27 @@ namespace Blog.Web.Areas.Admin.Controllers
 			this.validator = validator;
 			this.toast = toast;
 		}
-
+		[Authorize(Roles ="Superadmin, Admin, User")]
 		public async Task<IActionResult> Index()
 		{
 			var articles =await articleService.GetAllArticleAsync();
 			return View(articles);
 		}
+		[Authorize(Roles = "Superadmin, Admin")]
+
+		public async Task<IActionResult> DeletedArticles()
+		{
+			var articles = await articleService.GetAllDeletedArticleAsync();
+			return View(articles);
+		}
+		[Authorize(Roles = "Superadmin, Admin")]
 		[HttpGet]
 		public async Task<IActionResult> Add()
 		{
 			var categories = await categoryService.GetAllCategoriesAsync();
 			return View(new ArticleAddDto { Categories=categories});
 		}
+		[Authorize(Roles = "Superadmin, Admin")]
 		[HttpPost]
 		public async Task<IActionResult> Add(ArticleAddDto articleAddDto)
 		{
@@ -65,6 +75,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			
 		
 		}
+		[Authorize(Roles = "Superadmin, Admin")]
 		[HttpGet]
 		public async Task<IActionResult> Update(Guid articleId)
 		{
@@ -74,6 +85,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			articleUpdateDto.Categories = categories;
 			return View(articleUpdateDto);
 		}
+		[Authorize(Roles = "Superadmin, Admin")]
 		[HttpPost]
 		public async Task<IActionResult> Update(ArticleUpdateDto articleUpdateDto)
 		{
@@ -96,12 +108,22 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 		
 		}
+		[Authorize(Roles = "Superadmin, Admin")]
+
 		public async Task<IActionResult> Delete(Guid articleId)
 		{
 			
 			var title=await articleService.SafeDeleteArticleAsync(articleId);
 			toast.AddSuccessToastMessage(Message.Article.Delete(title));
 			return RedirectToAction("Index", "Article", new {Area="Admin"});
+		}
+		[Authorize(Roles = "Superadmin, Admin")]
+		public async Task<IActionResult> UndoDelete(Guid articleId)
+		{
+
+			var title = await articleService.UndoDeleteArticleAsync(articleId);
+			toast.AddSuccessToastMessage(Message.Article.UndoDelete(title));
+			return RedirectToAction("Index", "Article", new { Area = "Admin" });
 		}
 	}
 }

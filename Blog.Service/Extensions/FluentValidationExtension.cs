@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Service.Extensions
 {
@@ -16,6 +17,13 @@ namespace Blog.Service.Extensions
 			foreach (var error in result.Errors)
 			{
 				modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+			}
+		}
+		public static void AddToModelIdentityState(this IdentityResult result, ModelStateDictionary modelState)
+		{
+			foreach (var error in result.Errors)
+			{
+				modelState.AddModelError("", error.Description);
 			}
 		}
 	}

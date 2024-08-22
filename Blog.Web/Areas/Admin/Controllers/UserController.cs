@@ -2,7 +2,9 @@
 using Blog.Data.Context;
 using Blog.Entity.DTOs.Users;
 using Blog.Entity.Entities;
+using Blog.Service.Extensions;
 using Blog.Web.ResultMessages;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +19,16 @@ namespace Blog.Web.Areas.Admin.Controllers
 		private readonly UserManager<AppUser> userManager;
 		private readonly IMapper mapper;
 		private readonly RoleManager<AppRole> roleManager;
+		private readonly IValidator<AppUser> validator;
 		private readonly IToastNotification toast;
 		AppDbContext _context;
 
-		public UserController(UserManager<AppUser> userManager, IMapper mapper, RoleManager<AppRole> roleManager, IToastNotification toast, AppDbContext context = null)
+		public UserController(UserManager<AppUser> userManager, IMapper mapper, RoleManager<AppRole> roleManager, IValidator<AppUser> validator,IToastNotification toast, AppDbContext context = null)
 		{
 			this.userManager = userManager;
 			this.mapper = mapper;
 			this.roleManager = roleManager;
+			this.validator = validator;
 			this.toast = toast;
 			_context = context;
 		}
@@ -54,7 +58,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			{
 				var map = mapper.Map<AppUser>(userAddDto);
 				var roles = await roleManager.Roles.ToListAsync();
-
+				var validate = await validator.ValidateAsync(map);
 				map.UserName = userAddDto.Email;
 				var result = await userManager.CreateAsync(map, string.IsNullOrEmpty(userAddDto.Password) ? "": userAddDto.Password);
 				if (result.Succeeded)
@@ -74,10 +78,9 @@ namespace Blog.Web.Areas.Admin.Controllers
 				}
 				else
 				{
-					foreach (var error in result.Errors)
-					{
-						ModelState.AddModelError("", error.Description);
-					}
+					   result.AddToModelIdentityState(this.ModelState);
+						validate.AddToModelState(this.ModelState);
+					
 				}
 
 				await transaction.RollbackAsync(); // Hata durumunda işlemi geri al
@@ -101,33 +104,44 @@ namespace Blog.Web.Areas.Admin.Controllers
 			{
 				var roles = await roleManager.Roles.ToListAsync();
 				var userRole = string.Join("",await userManager.GetRolesAsync(user));
+	
 				using (var transaction = await _context.Database.BeginTransactionAsync())
 				{
 				
-					mapper.Map(userUpdateDto, user);
-					user.UserName = userUpdateDto.Email;
-					user.SecurityStamp=Guid.NewGuid().ToString();
-					var result = await userManager.UpdateAsync(user);
-					if(result.Succeeded)
+					var map=mapper.Map(userUpdateDto, user);
+					var validate = await validator.ValidateAsync(map);
+					if (validate.IsValid)
 					{
-						await userManager.RemoveFromRoleAsync(user, userRole);
-						var role = await roleManager.FindByIdAsync(userUpdateDto.RoleId.ToString());
-						await userManager.AddToRoleAsync(user, role.Name);
-						toast.AddSuccessToastMessage(Message.User.Update(user.UserName));
-						await transaction.CommitAsync(); // İşlem başarılı, değişiklikleri kaydet
-						return RedirectToAction("Index");
+						user.UserName = userUpdateDto.Email;
+						user.SecurityStamp = Guid.NewGuid().ToString();
+						var result = await userManager.UpdateAsync(map);
+						if (result.Succeeded)
+						{
+							await userManager.RemoveFromRoleAsync(user, userRole);
+							var role = await roleManager.FindByIdAsync(userUpdateDto.RoleId.ToString());
+							await userManager.AddToRoleAsync(user, role.Name);
+							toast.AddSuccessToastMessage(Message.User.Update(user.UserName));
+							await transaction.CommitAsync(); // İşlem başarılı, değişiklikleri kaydet
+							return RedirectToAction("Index");
 
+						}
+						else
+						{
+
+
+							result.AddToModelIdentityState(this.ModelState);
+							return View(new UserUpdateDto { Roles = roles });
+
+						}
 					}
 					else
 					{
-						foreach (var error in result.Errors)
-						{
-							ModelState.AddModelError("", error.Description);
-							return View(new UserUpdateDto { Roles = roles });
-						}
+						validate.AddToModelState(this.ModelState);
+						return View(new UserUpdateDto { Roles = roles });
+
 					}
 
-				await transaction.RollbackAsync(); // Hata durumunda işlemi geri al
+					await transaction.RollbackAsync(); // Hata durumunda işlemi geri al
 				return View(new UserUpdateDto { Roles = roles });
 				}
 			}
