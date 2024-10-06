@@ -3,8 +3,10 @@ using Blog.Entity.DTOs.Categories;
 using Blog.Entity.Entities;
 using Blog.Service.Extensions;
 using Blog.Service.Services.Abstract;
+using Blog.Web.Consts;
 using Blog.Web.ResultMessages;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 
@@ -25,23 +27,26 @@ namespace Blog.Web.Areas.Admin.Controllers
 			this.validator = validator;
 			this.toast = toast;
 		}
-
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}, {RoleConsts.User}")]
 		public async Task<IActionResult> Index()
 		{
 			var categories=await _categoryService.GetAllCategoriesAsync();
 			return View(categories);
 		}
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> DeletedCategories()
 		{
 			var categories = await _categoryService.GetAllDeletedCategoriesAsync();
 			return View(categories);
 		}
 		[HttpGet]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public IActionResult Add()
 		{
 			return View();
 		}
 		[HttpPost]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> Add(CategoryAddDto categoryAddDto)
 		{
 			var map= mapper.Map<Category>(categoryAddDto);
@@ -59,6 +64,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 		}
 		[HttpPost]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> AddWithAjax([FromBody] CategoryAddDto categoryAddDto)
 		{
 			var map = mapper.Map<Category>(categoryAddDto);
@@ -76,6 +82,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 		}
 		[HttpGet]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> Update(Guid categoryId)
 		{
 			var category=await _categoryService.GetCategoryByIdAsync(categoryId);
@@ -83,6 +90,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			return View(map);
 		}
 		[HttpPost]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
 		{
 			var map=mapper.Map<Category>(categoryUpdateDto);
@@ -96,6 +104,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			result.AddToModelState(this.ModelState) ;
 			return View(categoryUpdateDto);	
 		}
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> Delete(Guid categoryId)
 		{
 			var name= await _categoryService.DeleteCategoryByIdAsync(categoryId);
@@ -103,6 +112,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			return RedirectToAction("Index");
 
 		}
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> UndoDelete(Guid categoryId)
 		{
 			var name = await _categoryService.UndoDeleteCategoryByIdAsync(categoryId);

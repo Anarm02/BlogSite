@@ -1,5 +1,7 @@
-﻿using Blog.Service.Services.Abstract;
+﻿using Blog.Entity.Entities;
+using Blog.Service.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Areas.Admin.Controllers
@@ -9,13 +11,16 @@ namespace Blog.Web.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         private readonly IArticleService _articleService;
-        public HomeController(IArticleService articleService)
-        {
-            _articleService = articleService;
-        }
-        public async Task<IActionResult> Index()
+        private readonly UserManager<AppUser> _userManager;
+		public HomeController(IArticleService articleService, UserManager<AppUser> userManager)
+		{
+			_articleService = articleService;
+			_userManager = userManager;
+		}
+		public async Task<IActionResult> Index()
         {
             var articles=await _articleService.GetAllArticleAsync();
+            var loggeduser=await _userManager.GetUserAsync(HttpContext.User);
             return View(articles);
         }
     }

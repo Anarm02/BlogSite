@@ -3,8 +3,10 @@ using Blog.Data.Context;
 using Blog.Entity.DTOs.Users;
 using Blog.Entity.Entities;
 using Blog.Service.Extensions;
+using Blog.Web.Consts;
 using Blog.Web.ResultMessages;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			this.toast = toast;
 			_context = context;
 		}
+		[Authorize(Roles =$"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> Index()
 		{
 			var users=await userManager.Users.ToListAsync();
@@ -46,12 +49,14 @@ namespace Blog.Web.Areas.Admin.Controllers
 			return View(map);
 		}
 		[HttpGet]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
 		public async Task<IActionResult> Add()
 		{
 			var roles=await roleManager.Roles.ToListAsync();
 			return View(new UserAddDto { Roles=roles});
 		}
 		[HttpPost]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
 		public async Task<IActionResult> Add(UserAddDto userAddDto)
 		{
 			using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -88,6 +93,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 		}
 		[HttpGet]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
 		public async Task<IActionResult> Update(Guid userId)
 		{
 			var user=await userManager.FindByIdAsync(userId.ToString());
@@ -96,7 +102,8 @@ namespace Blog.Web.Areas.Admin.Controllers
 			map.Roles= roles;
 			return View(map);
 		}
-		[HttpPost]	
+		[HttpPost]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
 		public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
 		{
 			var user=await userManager.FindByIdAsync(userUpdateDto.Id.ToString());
@@ -147,6 +154,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 			return NotFound();
 		}
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}")]
 		public async Task<IActionResult> Delete(Guid userId)
 		{
 			var user=await userManager.FindByIdAsync(userId.ToString());

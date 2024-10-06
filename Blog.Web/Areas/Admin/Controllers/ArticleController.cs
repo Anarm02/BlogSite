@@ -3,6 +3,7 @@ using Blog.Entity.DTOs.Articles;
 using Blog.Entity.Entities;
 using Blog.Service.Extensions;
 using Blog.Service.Services.Abstract;
+using Blog.Web.Consts;
 using Blog.Web.ResultMessages;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -33,27 +34,27 @@ namespace Blog.Web.Areas.Admin.Controllers
 			this.validator = validator;
 			this.toast = toast;
 		}
-		[Authorize(Roles ="Superadmin, Admin, User")]
+		[Authorize(Roles =$"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}, {RoleConsts.User}")]
 		public async Task<IActionResult> Index()
 		{
 			var articles =await articleService.GetAllArticleAsync();
 			return View(articles);
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 
 		public async Task<IActionResult> DeletedArticles()
 		{
 			var articles = await articleService.GetAllDeletedArticleAsync();
 			return View(articles);
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		[HttpGet]
 		public async Task<IActionResult> Add()
 		{
 			var categories = await categoryService.GetAllCategoriesAsync();
 			return View(new ArticleAddDto { Categories=categories});
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		[HttpPost]
 		public async Task<IActionResult> Add(ArticleAddDto articleAddDto)
 		{
@@ -75,7 +76,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			
 		
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		[HttpGet]
 		public async Task<IActionResult> Update(Guid articleId)
 		{
@@ -85,7 +86,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			articleUpdateDto.Categories = categories;
 			return View(articleUpdateDto);
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		[HttpPost]
 		public async Task<IActionResult> Update(ArticleUpdateDto articleUpdateDto)
 		{
@@ -108,7 +109,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			}
 		
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 
 		public async Task<IActionResult> Delete(Guid articleId)
 		{
@@ -117,7 +118,7 @@ namespace Blog.Web.Areas.Admin.Controllers
 			toast.AddSuccessToastMessage(Message.Article.Delete(title));
 			return RedirectToAction("Index", "Article", new {Area="Admin"});
 		}
-		[Authorize(Roles = "Superadmin, Admin")]
+		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
 		public async Task<IActionResult> UndoDelete(Guid articleId)
 		{
 
