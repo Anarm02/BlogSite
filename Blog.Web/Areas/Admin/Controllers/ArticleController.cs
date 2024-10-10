@@ -41,7 +41,6 @@ namespace Blog.Web.Areas.Admin.Controllers
 			return View(articles);
 		}
 		[Authorize(Roles = $"{RoleConsts.SuperAdmin}, {RoleConsts.Admin}")]
-
 		public async Task<IActionResult> DeletedArticles()
 		{
 			var articles = await articleService.GetAllDeletedArticleAsync();
