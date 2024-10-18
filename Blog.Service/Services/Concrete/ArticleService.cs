@@ -135,5 +135,22 @@ namespace Blog.Service.Services.Concrete
             await _unitOfWork.SaveAsynsc();
             return articletitlebefore;
 		}
+
+		public async Task<ArticleListDto> SearchAsync(string keyword, bool isAscending = false, int pageSize = 3, int currentPage = 1)
+		{
+            pageSize = pageSize > 20 ? 20 : pageSize;
+            var articles=await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted
+            && (a.Content.Contains(keyword) || a.Category.Name.Contains(keyword) || a.Title.Contains(keyword)), a=>a.Image,a=>a.Category,a=>a.User);
+            var sortedArticles=isAscending ? articles.OrderBy(a=>a.CreatedDate).Skip((currentPage-1)* pageSize).Take(pageSize).ToList()
+				: articles.OrderByDescending(a => a.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+            return new ArticleListDto
+            {
+                Articles = sortedArticles,
+                CurrentPage = currentPage,
+                IsAscending = isAscending,
+                PageSize = pageSize,
+                TotalCount = articles.Count()
+            };
+		}
 	}
 }

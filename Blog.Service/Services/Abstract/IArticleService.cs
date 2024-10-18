@@ -18,5 +18,6 @@ namespace Blog.Service.Services.Abstract
         Task<string> SafeDeleteArticleAsync(Guid articleId);
         Task<string> UndoDeleteArticleAsync(Guid articleId);
         Task<ArticleListDto> GetAllPagingAsync(Guid? categoryId, bool isAscending = false, int pageSize = 3, int currentPage = 1);
+        Task<ArticleListDto> SearchAsync(string keyword, bool isAscending = false, int pageSize = 3, int currentPage = 1);
 	}
 }
