@@ -19,9 +19,9 @@ namespace Blog.Web.Controllers
 			this.dashboardService = dashboardService;
 		}
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Guid? categoryId, int currentPage=1, int pageSize=3, bool isAscending=false)
         {
-            var articles=await articleService.GetAllArticleAsync();
+            var articles=await articleService.GetAllPagingAsync(categoryId,isAscending,pageSize,currentPage);
             return View(articles);
         }
         

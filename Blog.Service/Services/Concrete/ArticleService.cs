@@ -50,6 +50,24 @@ namespace Blog.Service.Services.Concrete
             
             return  _mapper.Map<List<ArticleDto>>(await _unitOfWork.GetRepository<Article>().GetAllAsync(a=>!a.IsDeleted,a=>a.Category,a=>a.Image));
         }
+        public async Task<ArticleListDto> GetAllPagingAsync(Guid? categoryId,bool isAscending=false,int pageSize=3,int currentPage = 1)
+        {
+            pageSize=pageSize>20 ? 20 : pageSize;
+            var articles = categoryId == null ? await _unitOfWork.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, a => a.Category, a => a.Image,a=>a.User)
+                : await _unitOfWork.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted && a.CategoryId == categoryId, a => a.Category, a => a.Image,a=>a.User);
+            var sortedArticles=isAscending ? articles.OrderBy(a=>a.CreatedDate).Skip((currentPage-1)*pageSize).Take(pageSize).ToList() :
+                articles.OrderByDescending(a=>a.CreatedDate).Skip((currentPage-1)*pageSize).Take(pageSize).ToList();
+            return new ArticleListDto
+            {
+                Articles = sortedArticles,
+                CategoryId = categoryId == null ? null : categoryId.Value,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                IsAscending = isAscending,
+                TotalCount = articles.Count
+            };
+                
+        }
 
 		public async Task<List<ArticleDto>> GetAllDeletedArticleAsync()
 		{
