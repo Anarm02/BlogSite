@@ -89,5 +89,11 @@ namespace Blog.Service.Services.Concrete
 			await unitOfWork.SaveAsynsc();
 			return category.Name;
 		}
+
+		public async Task<List<CategoryDto>> GetAllDeletedCategoriesTake24Async()
+		{
+			return mapper.Map<List<CategoryDto>>(await unitOfWork.GetRepository<Category>().GetAllAsync(c => !c.IsDeleted)).Take(24).ToList();
+
+		}
 	}
 }

@@ -11,6 +11,7 @@ namespace Blog.Service.Services.Abstract
 	{
 		Task<List<CategoryDto>> GetAllCategoriesAsync();
 		Task<List<CategoryDto>> GetAllDeletedCategoriesAsync();
+		Task<List<CategoryDto>> GetAllDeletedCategoriesTake24Async();
 		Task CreateCategory(CategoryAddDto categoryAddDto);
 		Task<string> UpdateCategory(CategoryUpdateDto categoryUpdateDto);
 		Task<CategoryDto> GetCategoryByIdAsync(Guid id);

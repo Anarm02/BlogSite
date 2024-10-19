@@ -77,7 +77,7 @@ namespace Blog.Service.Services.Concrete
 
 		public async Task<ArticleDto> GetArticleAsync(Guid articleId)
 		{
-			var article=await _unitOfWork.GetRepository<Article>().GetAsync(a=>a.Id==articleId && a.IsDeleted==false,a=>a.Category,a=>a.Image);
+			var article=await _unitOfWork.GetRepository<Article>().GetAsync(a=>a.Id==articleId && a.IsDeleted==false,a=>a.Category,a=>a.Image,a=>a.User);
             var map=_mapper.Map<ArticleDto>(article);
             return map;
 		}
