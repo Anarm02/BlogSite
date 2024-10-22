@@ -2,6 +2,7 @@ using Blog.Data.Context;
 using Blog.Data.Extensions;
 using Blog.Entity.Entities;
 using Blog.Service.Extensions;
+using Blog.Web.Filters.ArticleVisitors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
@@ -18,7 +19,7 @@ namespace Blog.Web
             // Add services to the container.
             builder.Services.Load(builder.Configuration);
             builder.Services.LoadService();
-            builder.Services.AddControllersWithViews().AddNToastNotifyToastr(new ToastrOptions()
+            builder.Services.AddControllersWithViews(opt=>opt.Filters.Add<ArticleVisitorFilter>()).AddNToastNotifyToastr(new ToastrOptions()
             {
 
                 PositionClass=ToastPositions.TopRight,
