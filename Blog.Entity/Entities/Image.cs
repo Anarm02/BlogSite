@@ -13,15 +13,17 @@ namespace Blog.Entity.Entities
         {
             
         }
-        public Image(string fileName,string fileType,string createdBy)
+        public Image(string fileName,string fileType,string createdBy,string fullPath)
         {
             FileName = fileName;
             FileType = fileType;
             CreatedBy = createdBy;  
+            FullPath = fullPath;
         }
         public string FileName { get; set; }
         public string FileType { get; set; }
-        public ICollection<Article> Articles { get; set; }
+		public string FullPath { get; set; }
+		public ICollection<Article> Articles { get; set; }
         public ICollection<AppUser> Users { get; set; }
     }
 }

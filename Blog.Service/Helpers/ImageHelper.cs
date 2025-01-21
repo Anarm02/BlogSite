@@ -95,7 +95,7 @@ namespace Blog.Service.Helpers
 			await using FileStream stream=new FileStream(path,FileMode.Create,FileAccess.Write,FileShare.None,1024*1024,useAsync:false);
 			await imageFile.CopyToAsync(stream);
 			await stream.FlushAsync();
-			return new ImgUploadDto { FullName=$"{foldername}/{newname}" };
+			return new ImgUploadDto { FullName=$"{foldername}/{newname}",FullPath=path };
 		}
 	}
 }

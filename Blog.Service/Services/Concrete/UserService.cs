@@ -140,7 +140,7 @@ namespace Blog.Service.Services.Concrete
 		{
 			var userMail=_user.GetLoggedInMail();
 			var imageToUpload =await imageHelper.Upload($"{userProfileDto.FirstName}{userProfileDto.LastName}", userProfileDto.Photo, Entity.Enums.ImageType.User);
-			Image image=new Image(imageToUpload.FullName,userProfileDto.Photo.ContentType,userMail);
+			Image image=new Image(imageToUpload.FullName,userProfileDto.Photo.ContentType,userMail,imageToUpload.FullPath);
 			await unitOfWork.GetRepository<Image>().AddAsync(image);
 			return image.Id;
 

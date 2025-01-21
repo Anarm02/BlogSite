@@ -9,5 +9,6 @@ namespace Blog.Entity.DTOs.Images
 	public class ImgUploadDto
 	{
         public string FullName { get; set; }
-    }
+		public string FullPath { get; set; }
+	}
 }

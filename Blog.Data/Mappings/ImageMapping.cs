@@ -18,7 +18,9 @@ namespace Blog.Data.Mappings
                 Id = Guid.Parse("{7DE25A1B-6C11-4AA3-9974-172C52571B2E}"),
                 FileName = "images/testImage",
                 FileType = "jpg",
-                CreatedBy = "Admin Test",
+                FullPath= @"D:\Backend\Projects\BlogSite\Blog.Web\wwwroot\images\article-images\efjfnerjnewefef_899.png",
+
+				CreatedBy = "Admin Test",
                 IsDeleted = false,
                 CreatedDate = DateTime.Now
             },
@@ -27,7 +29,9 @@ namespace Blog.Data.Mappings
                 Id = Guid.Parse("{3A94E829-4A63-4598-8BD7-80AEDA1EEF6A}"),
                 FileName = "images/VsImage",
                 FileType = "png",
-                CreatedBy = "Admin Test",
+                FullPath= @"D:\Backend\Projects\BlogSite\Blog.Web\wwwroot\images\article-images\gerwgnerjgnerwnkg_814.png",
+
+				CreatedBy = "Admin Test",
                 IsDeleted = false,
                 CreatedDate = DateTime.Now,
                

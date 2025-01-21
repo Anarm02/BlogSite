@@ -38,7 +38,7 @@ namespace Blog.Service.Services.Concrete
             var userId = _user.GetLoggedInUserId();
             var email=_user.GetLoggedInMail();
             var image=await imageHelper.Upload(articleAddDto.Title,articleAddDto.Photo,ImageType.Post);
-            Image image1 = new(image.FullName,articleAddDto.Photo.ContentType,email);
+            Image image1 = new(image.FullName,articleAddDto.Photo.ContentType,email,image.FullPath);
             await _unitOfWork.GetRepository<Image>().AddAsync(image1);
 			var article = new Article(articleAddDto.Title, articleAddDto.Content, userId, articleAddDto.CategoryId, image1.Id,email);
             await _unitOfWork.GetRepository<Article>().AddAsync(article);
@@ -120,7 +120,7 @@ namespace Blog.Service.Services.Concrete
                 }
                 
                 var imageUpload = await imageHelper.Upload(articleUpdateDto.Title, articleUpdateDto.Photo, ImageType.Post);
-                Image image = new(imageUpload.FullName, articleUpdateDto.Photo.ContentType, email);
+                Image image = new(imageUpload.FullName, articleUpdateDto.Photo.ContentType, email,imageUpload.FullPath);
                 await _unitOfWork.GetRepository<Image>().AddAsync(image);
                 article.ImageId= image.Id;
             }
